@@ -1,5 +1,5 @@
 import numpy as np
-import random,json
+import random
 import torch
 import torch.nn as nn
 import torch.optim
@@ -28,25 +28,25 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N', help='n
 parser.add_argument('--freq', default=10, type=int, metavar='N', help='log frequency (by iteration)')
 
 # Model parameters
-parser.add_argument('--height', default=32, type=int, metavar='N', help='image height')
-parser.add_argument('--width', default=32, type=int, metavar='N', help='image width')
+parser.add_argument('--height', default=224, type=int, metavar='N', help='image height')
+parser.add_argument('--width', default=224, type=int, metavar='N', help='image width')
 parser.add_argument('--channel', default=3, type=int, help='disable cuda')
-parser.add_argument('--enc_heads', default=12, type=int, help='number of encoder  heads')
-parser.add_argument('--enc_depth', default=9, type=int, help='number of encoder blocks')
-parser.add_argument('--dec_heads', default=12, type=int, help='number of decoder  heads')
+parser.add_argument('--enc_heads', default=8, type=int, help='number of encoder  heads')
+parser.add_argument('--enc_depth', default=4, type=int, help='number of encoder blocks')
+parser.add_argument('--dec_heads', default=8, type=int, help='number of decoder  heads')
 parser.add_argument('--dec_depth', default=1, type=int, help='number of decoder blocks')
-parser.add_argument('--patch_size', default=4, type=int, help='patch size')
-parser.add_argument('--dim', default=192, type=int, help='embedding dim of patch')
-parser.add_argument('--enc_mlp_dim', default=384, type=int, help='feed forward hidden_dim for an encoder block')
-parser.add_argument('--dec_mlp_dim', default=384, type=int, help='feed forward hidden_dim for a decoder block')
+parser.add_argument('--patch_size', default=16, type=int, help='patch size')
+parser.add_argument('--dim', default=512, type=int, help='embedding dim of patch')
+parser.add_argument('--enc_mlp_dim', default=1024, type=int, help='feed forward hidden_dim for an encoder block')
+parser.add_argument('--dec_mlp_dim', default=1024, type=int, help='feed forward hidden_dim for a decoder block')
 
 
 # Optimization hyperparams
-parser.add_argument('--epochs', default=10, type=int, metavar='N', help='number of total epochs to run')
-parser.add_argument('--warmup', default=10, type=int, metavar='N', help='number of warmup epochs')
+parser.add_argument('--epochs', default=20, type=int, metavar='N', help='number of total epochs to run')
+parser.add_argument('--warmup', default=5, type=int, metavar='N', help='number of warmup epochs')
 parser.add_argument('-b', '--batch_size', default=128, type=int, metavar='N', help='mini-batch size (default: 128)', dest='batch_size')
-parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
-parser.add_argument('--weight_decay', default=5e-2, type=float, help='weight decay (default: 1e-4)')
+parser.add_argument('--lr', default=0.0003, type=float, help='initial learning rate')
+parser.add_argument('--weight_decay', default=5e-4, type=float, help='weight decay (default: 1e-4)')
 parser.add_argument('--resume', default=False, help='Version')
 
 args = parser.parse_args()
@@ -110,7 +110,7 @@ if __name__ == '__main__':
                     dec_head,dec_feed_forward,dec_depth,max_seq_len,vocab_size,padding_idx)
     model = model.to(device)
     optimizer = torch.optim.AdamW(model.parameters(),lr=lr,weight_decay = weight_decay)
-    criterion = nn.CrossEntropyLoss().to(device)
+    criterion = nn.CrossEntropyLoss(ignore_index=padding_idx).to(device)
     num_epochs = args.epochs
     base_scheduler = lr_schedule.CosineAnnealingLR(optimizer, T_max=num_epochs, eta_min=1e-4)
     scheduler = warmup_scheduler.GradualWarmupScheduler(optimizer, multiplier=1., total_epoch=warmup, after_scheduler=base_scheduler)
@@ -134,6 +134,7 @@ if __name__ == '__main__':
     for epoch in trange(num_epochs):
         train_loss = train_epoch(model,train_loader,optimizer,criterion,device)
         valid_loss = validate(model,val_loader,criterion,device)
+        scheduler.step()
         torch.cuda.empty_cache()
         print(f"Epoch: {epoch+1}, Train Loss: {train_loss}, Val Loss: {valid_loss}")
         if valid_loss < best_loss:
