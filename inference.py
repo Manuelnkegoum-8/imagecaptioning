@@ -53,8 +53,8 @@ transforms =  T.Compose([
                         T.Resize((height,width)),
                         T.ToTensor()
                          ])
-vocab_size = 2994
-max_seq_len = len(vocab)
+vocab_size = len(vocab)
+max_seq_len = 60
 padding_idx = vocab['<PAD>']
 
 model = Transformer(height,width,n_channels,patch_size,dim,enc_head,enc_feed_forward,enc_depth,
