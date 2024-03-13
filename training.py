@@ -88,14 +88,14 @@ if __name__ == '__main__':
     train_loader = DataLoader(
                     dataset=train_data,
                     batch_size=batch_size,
-                    num_workers=2,
+                    num_workers=args.j,
                     shuffle=True,
                     collate_fn = collate_fn
                     )
     val_loader = DataLoader(
                     dataset=val_data,
                     batch_size=batch_size,
-                    num_workers=2,
+                    num_workers=args.j,
                     shuffle=False,
                     collate_fn = collate_fn
                     )
