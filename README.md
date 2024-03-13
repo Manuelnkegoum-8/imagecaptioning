@@ -37,7 +37,7 @@ python -m spacy download en_core_web_sm
 To train the model, run the following command:
 
 ```python
-python main.py --epochs 100 --img_size 224 --patch_size 16
+python training.py --epochs 100 --height 224 --width 224 --patch_size 16
 ```
 
 
