@@ -1,6 +1,4 @@
-# Project Title
-
-Transformer-based Image Captioning with Vision Transformer Encoder
+# Transformer-based Image Captioning with Vision Transformer Encoder
 
 [![pytorch version](https://img.shields.io/badge/pytorch-2.1.2-yellow.svg)](https://pypi.org/project/torch/2.1.2-/)
 [![torchvision version](https://img.shields.io/badge/torchvision-0.16.2-yellow.svg)](https://pypi.org/project/torchvision/0.16.2-/)
