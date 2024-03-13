@@ -131,7 +131,7 @@ if __name__ == '__main__':
     print("[INFO] Begin training for {0} epochs".format(num_epochs))
     print('='*100+Style.RESET_ALL)
 
-    for epoch in trange(num_epochs):
+    for epoch in trange(num_epochs,ncols=100):
         train_loss = train_epoch(model,train_loader,optimizer,criterion,device)
         valid_loss = validate(model,val_loader,criterion,device)
         scheduler.step()
