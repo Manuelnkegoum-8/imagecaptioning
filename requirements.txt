@@ -1,0 +1,11 @@
+colorama==0.4.6
+einops==0.7.0
+gradio==4.21.0
+numpy==1.26.4
+pandas==2.2.1
+Pillow==10.2.0
+spacy==3.7.4
+torch==2.1.2
+torchvision==0.16.2
+tqdm==4.66.1
+warmup_scheduler==0.3

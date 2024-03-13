@@ -129,7 +129,7 @@ def greedy_decoding(model, image, max_len, start_idx,end_idx):
     encoder_out = model.encode(image)
 
     for i in range(max_len):
-        decoder_output = model.pred(model.decode(encoder_out,decoded_outputs))  # Decode next token
+        decoder_output = model.decode(encoder_out,decoded_outputs)  # Decode next token
         next_word = decoder_output[:, -1].argmax(dim=-1).unsqueeze(-1)  # Get most probable word index
         if next_word==end_idx:
             break

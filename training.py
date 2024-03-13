@@ -1,5 +1,5 @@
 import numpy as np
-import random
+import random,json
 import torch
 import torch.nn as nn
 import torch.optim
@@ -19,7 +19,7 @@ import torch.optim.lr_scheduler as lr_schedule
 import argparse
 from tqdm import trange
 
-parser = argparse.ArgumentParser(description='CIFAR10 quick training script')
+parser = argparse.ArgumentParser(description='Image Captioning on Flickr8k quick training script')
 
 # Data args
 parser.add_argument('--data_path', default='./data', type=str, help='dataset path')
@@ -103,7 +103,9 @@ if __name__ == '__main__':
     vocab_size = len(data.vocab)
     max_seq_len = args.max_seq_len
     padding_idx = data.vocab.stoi['<PAD>']
-
+    with open('vocab.json', 'w') as f:
+        # use json.dump to write the dictionary to the file
+        json.dump(data.vocab.stoi, f)
     model = Transformer(height,width,n_channels,patch_size,dim,enc_head,enc_feed_forward,enc_depth,
                     dec_head,dec_feed_forward,dec_depth,max_seq_len,vocab_size,padding_idx)
     model = model.to(device)
